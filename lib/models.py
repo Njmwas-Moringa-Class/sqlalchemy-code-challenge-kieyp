@@ -9,8 +9,8 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 engine = create_engine('sqlite:///db/restaurants.db', echo=True)
-Session = sessionmaker(bind=engine)
-session = Session()
+session=sessionmaker(bind=engine)
+session=session()
 
 
 
@@ -49,6 +49,13 @@ class Review(Base):
         Returns the Restaurant instance associated with this review.
         """
         return self.restaurant
+    
+    
+    def full_review(self):
+        """
+        Returns a formatted string representing the full review.
+        """
+        return f"Review for {self.restaurant.name} by {self.customer.full_name()}: {self.star_rating} stars."
 
 class Customer(Base):
     __tablename__ = 'customers'
@@ -101,10 +108,7 @@ class Customer(Base):
         Creates a new review for the restaurant with the given rating.
         """
         new_review = Review(score=rating, restaurant=restaurant, customer=self, star_rating=rating)
-        session.add(new_review)
-        # Commit the session to save changes to the database
-        session.commit()
-
+       
        
        
        
