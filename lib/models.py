@@ -3,10 +3,14 @@ from sqlalchemy import (create_engine, PrimaryKeyConstraint, Column, String, Int
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship,backref
+from sqlalchemy.orm import sessionmaker
+
 
 
 Base = declarative_base()
 engine = create_engine('sqlite:///db/restaurants.db', echo=True)
+Session = sessionmaker(bind=engine)
+session = Session()
 
 
 
@@ -70,6 +74,51 @@ class Customer(Base):
         Returns a collection of all the restaurants that the Customer has reviewed.
         """
         return self.restaurants
+    
+    def full_name(self):
+        """
+        Returns the full name of the customer, with the first name and the last name concatenated.
+        """
+        return f"{self.first_name} {self.last_name}"
+    
+    
+    def favorite_restaurant(self):
+        """
+        Returns the restaurant instance that has the highest star rating from this customer.
+        """
+        # Get all reviews by this customer
+        customer_reviews = self.reviews
+
+        # Find the review with the highest star rating
+        highest_rating_review = max(customer_reviews, key=lambda review: review.star_rating)
+
+        # Return the associated restaurant of the highest rated review
+        return highest_rating_review.restaurant
+    
+    
+    def add_review(self, restaurant, rating):
+        """
+        Creates a new review for the restaurant with the given rating.
+        """
+        new_review = Review(score=rating, restaurant=restaurant, customer=self, star_rating=rating)
+        session.add(new_review)
+        # Commit the session to save changes to the database
+        session.commit()
+
+       
+       
+       
+       
+    def delete_reviews(self, restaurant):
+        """
+        Removes all reviews by this customer for the given restaurant.
+        """
+        # Get all reviews by this customer for the given restaurant
+        reviews_to_delete = [review for review in self.reviews if review.restaurant == restaurant]
+
+        # Delete the reviews from the database
+        for review in reviews_to_delete:
+            session.delete(review)
 
 class Restaurant(Base):
     __tablename__ = 'restaurants'
