@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import random
+import ipdb;
+from models import Customer,Review,Restaurant
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import ipdb;
+
 
 
 if __name__ == '__main__':
