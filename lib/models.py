@@ -148,3 +148,21 @@ class Restaurant(Base):
         Returns a collection of all the customers who reviewed the Restaurant.
         """
         return self.customers
+
+    
+    
+    @classmethod
+    def fanciest(cls, session):
+        """
+        Returns the restaurant instance with the highest price.
+        """
+        return session.query(cls).order_by(cls.price.desc()).first()
+
+    def all_reviews(self):
+        """
+        Returns a list of strings with all the reviews for this restaurant formatted as specified.
+        """
+        review_strings = []
+        for review in self.reviews:
+            review_strings.append(f"Review for {self.name} by {review.customer.full_name()}: {review.star_rating} stars.")
+        return review_strings
