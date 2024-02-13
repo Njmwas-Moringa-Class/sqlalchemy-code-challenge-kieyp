@@ -35,6 +35,7 @@ if __name__ == '__main__':
     # Commit the added restaurants and customers
     session.commit()
 
+
     # Generate fake data for reviews
     for restaurant in session.query(Restaurant).all():
         for _ in range(random.randint(1, 5)):
@@ -46,6 +47,7 @@ if __name__ == '__main__':
                 customer=customer,
             )
             session.add(review)
+
 
     # Commit the added reviews
     session.commit()
